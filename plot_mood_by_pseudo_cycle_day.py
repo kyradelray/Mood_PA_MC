@@ -46,12 +46,12 @@ phase_ranges = {
     'phase_4': (21, 27)     # 7 days, like late luteal
 }
 
-# Phase-specific effects from analysis (median split)
+# Phase-specific effects from analysis (median split, first Monday)
 phase_effects = {
-    'phase_1': {'effect': 0.93, 'p': 0.383, 'sig': ''},
-    'phase_2': {'effect': 2.12, 'p': 0.017, 'sig': '*'},
-    'phase_3': {'effect': 0.54, 'p': 0.563, 'sig': ''},
-    'phase_4': {'effect': 1.46, 'p': 0.129, 'sig': ''}
+    'phase_1': {'effect': 1.67, 'p': 0.114, 'sig': ''},
+    'phase_2': {'effect': 2.02, 'p': 0.022, 'sig': '*'},
+    'phase_3': {'effect': 1.32, 'p': 0.159, 'sig': ''},
+    'phase_4': {'effect': 1.35, 'p': 0.162, 'sig': ''}
 }
 
 # Fourier fitting
@@ -115,10 +115,10 @@ create_fourier_with_ci(active, '#2CA02C', 'Active (above median)', ax, n_harmoni
 ax.axhline(y=0, color='gray', linestyle='--', linewidth=1, alpha=0.5)
 
 # Labels
-ax.set_xlabel('Day of Month (from 1st)', fontsize=12)
+ax.set_xlabel('Day (from first Monday of month)', fontsize=12)
 ax.set_ylabel('Next-Day Mood (% change from personal mean)', fontsize=12)
 ax.set_title('Effect of Physical Activity on Next-Day Mood: MALES\n'
-             '(Pseudo-phases from 1st of each month, same intervals as menstrual cycle)', fontsize=14)
+             '(Pseudo-phases from first Monday of each month, same intervals as menstrual cycle)', fontsize=14)
 
 ax.set_xlim(-0.5, 27.5)
 

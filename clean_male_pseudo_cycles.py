@@ -31,12 +31,18 @@ print(f"Male users with activity data: {activities['userid'].nunique()}")
 user_date_ranges = activities.groupby('userid')['date'].agg(['min', 'max']).reset_index()
 user_date_ranges.columns = ['userid', 'first_date', 'last_date']
 
-# Function to get first day of a month
-def first_day_of_month(year, month):
-    return pd.Timestamp(year=year, month=month, day=1)
+# Function to find first Monday of a month
+def first_monday_of_month(year, month):
+    from datetime import timedelta
+    first_day = pd.Timestamp(year=year, month=month, day=1)
+    # Monday is weekday 0
+    days_until_monday = (7 - first_day.weekday()) % 7
+    if first_day.weekday() == 0:  # Already Monday
+        return first_day
+    return first_day + timedelta(days=days_until_monday)
 
 # Create pseudo-cycle day labels for each user
-print("\nCreating pseudo-cycle day labels based on first day of each month...")
+print("\nCreating pseudo-cycle day labels based on first Monday of each month...")
 
 all_records = []
 
@@ -52,8 +58,8 @@ for _, row in user_date_ranges.iterrows():
         year = current_date.year
         month = current_date.month
 
-        # Find first day of this month (this becomes day 0)
-        anchor_date = first_day_of_month(year, month)
+        # Find first Monday of this month (this becomes day 0)
+        anchor_date = first_monday_of_month(year, month)
 
         # Day 0 = first Monday of month (anchor_date)
         # Label days from 0 to 27 (4 full weeks)
@@ -208,7 +214,7 @@ print(f"Total observations: {len(pseudo_cycles_with_activity)}")
 print(f"Unique users: {pseudo_cycles_with_activity['userid'].nunique()}")
 print(f"Users with both active/inactive states: {(user_states == 2).sum()}")
 print(f"Observations with next_day_mood_pct: {pseudo_cycles_with_activity['next_day_mood_pct'].notna().sum()}")
-print(f"\nPhase mapping (starting from 1st of month, same intervals as women):")
+print(f"\nPhase mapping (starting from first Monday of month, same intervals as women):")
 print(f"  Phase 1: days 0-5   (6 days, like menstruation)")
 print(f"  Phase 2: days 6-13  (8 days, like follicular)")
 print(f"  Phase 3: days 14-20 (7 days, like early luteal)")
