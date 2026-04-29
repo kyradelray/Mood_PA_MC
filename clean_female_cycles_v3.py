@@ -157,21 +157,23 @@ cycle_days_with_activity.loc[both_missing, 'activity_minutes'] = np.nan
 print(f"\nActivity minutes stats:")
 print(cycle_days_with_activity['activity_minutes'].describe())
 
-# Create active variable: 1 if activity_minutes > person's median
-user_median_activity = cycle_days_with_activity.groupby('userid')['activity_minutes'].transform('median')
-cycle_days_with_activity['user_median_activity'] = user_median_activity
+# Create active variable: 1 if activity_minutes > person's 25th percentile (bottom quartile)
+# This compares bottom 25% (inactive) vs top 75% (active)
+user_q25_activity = cycle_days_with_activity.groupby('userid')['activity_minutes'].transform(lambda x: x.quantile(0.25))
+cycle_days_with_activity['user_q25_activity'] = user_q25_activity
 
-# Active = 1 if above personal median, 0 if below
+# Active = 1 if above personal 25th percentile (top 3 quartiles), 0 if in bottom quartile
 cycle_days_with_activity['active'] = (
-    cycle_days_with_activity['activity_minutes'] > cycle_days_with_activity['user_median_activity']
+    cycle_days_with_activity['activity_minutes'] > cycle_days_with_activity['user_q25_activity']
 ).astype(float)
 
 # Set active to NaN where activity_minutes is missing
 cycle_days_with_activity.loc[cycle_days_with_activity['activity_minutes'].isna(), 'active'] = np.nan
 
 print(f"\nMatched records with activity data: {cycle_days_with_activity['activity_minutes'].notna().sum()}")
-print(f"Active variable distribution (above/below personal median activity):")
+print(f"Active variable distribution (bottom quartile vs top 3 quartiles):")
 print(cycle_days_with_activity['active'].value_counts(dropna=False))
+print(f"\nExpected ratio: ~25% inactive, ~75% active")
 
 # Check how many users have both states
 has_activity = cycle_days_with_activity[cycle_days_with_activity['active'].notna()]
