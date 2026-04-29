@@ -151,7 +151,7 @@ pseudo_cycles_with_activity['active'] = (
 pseudo_cycles_with_activity.loc[pseudo_cycles_with_activity['activity_minutes'].isna(), 'active'] = np.nan
 
 print(f"\nMatched records with activity data: {pseudo_cycles_with_activity['activity_minutes'].notna().sum()}")
-print(f"Active variable distribution (bottom quartile vs top 3 quartiles):")
+print(f"Active variable distribution (below vs above personal median):")
 print(pseudo_cycles_with_activity['active'].value_counts(dropna=False))
 
 # Check how many users have both states
