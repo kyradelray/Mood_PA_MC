@@ -125,8 +125,8 @@ def create_fourier_with_ci(data, color, label, ax, n_harmonics=4):
 # Plot inactive (red) and active (green) with CIs using Fourier smoothing
 # n_harmonics controls flexibility (higher = more flexible, lower = smoother)
 N_HARMONICS = 3  # Number of Fourier harmonics (higher = more flexible)
-create_fourier_with_ci(inactive, '#D62728', 'Inactive (bottom 25%)', ax, n_harmonics=N_HARMONICS)
-create_fourier_with_ci(active, '#2CA02C', 'Active (top 75%)', ax, n_harmonics=N_HARMONICS)
+create_fourier_with_ci(inactive, '#D62728', 'Inactive (below median)', ax, n_harmonics=N_HARMONICS)
+create_fourier_with_ci(active, '#2CA02C', 'Active (above median)', ax, n_harmonics=N_HARMONICS)
 
 # Add reference line at 0
 ax.axhline(y=0, color='gray', linestyle='--', linewidth=1, alpha=0.5)
@@ -135,17 +135,17 @@ ax.axhline(y=0, color='gray', linestyle='--', linewidth=1, alpha=0.5)
 ax.set_xlabel('Cycle Day', fontsize=12)
 ax.set_ylabel('Next-Day Mood (% change from personal mean)', fontsize=12)
 ax.set_title('Effect of Physical Activity on Next-Day Mood Across the Menstrual Cycle\n'
-             '(Active = top 75% of personal activity, Inactive = bottom 25%)', fontsize=14)
+             '(Active = above personal median, Inactive = below median)', fontsize=14)
 
 # Set x-axis limits for 28-day cycle
 ax.set_xlim(-14.5, 13.5)
 
-# Phase-specific effects from mixed-effects analysis (quartile split)
+# Phase-specific effects from mixed-effects analysis (median split)
 phase_effects = {
-    'early_luteal': {'effect': -1.56, 'p': 0.445, 'sig': ''},
-    'late_luteal': {'effect': 2.99, 'p': 0.137, 'sig': ''},
-    'menstruation': {'effect': 4.91, 'p': 0.016, 'sig': '*'},
-    'follicular': {'effect': 8.55, 'p': 0.0001, 'sig': '***'}
+    'early_luteal': {'effect': 3.50, 'p': 0.044, 'sig': '*'},
+    'late_luteal': {'effect': 0.83, 'p': 0.636, 'sig': ''},
+    'menstruation': {'effect': 3.49, 'p': 0.036, 'sig': '*'},
+    'follicular': {'effect': 7.63, 'p': 0.0001, 'sig': '***'}
 }
 
 # Add phase labels at top with effect sizes
